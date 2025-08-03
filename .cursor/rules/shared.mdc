@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# AI Rules for 10X-TODO
+
+10XTODO is a web application that improves task management through integration with AI. It allows you to create, edit and delete tasks and subtasks, mark them as completed, and generate a list of specific tasks based on a short description of the goal or problem.
+
+## TECH STACK
+
+- Vue 3
+- Nuxt 3
+- Pinia
+- TypeScript 5
+- Tailwind 4
+- Shadcn/vue (Reka UI)
+
+## PROJECT STRUCTURE
+
+When introducing changes to the project, always follow the directory structure below:
+
+- `./assets` - website's assets that the build tool will process
+- `./components` - Vue components
+- `./compoosables` - Vue composables
+- `./layouts` - Vue files that extract common UI patterns
+- `./middleware` - code that runs before navigating to a particular route
+- `./pages` - Vue components, file-based routing
+- `./plugins` - plugins used at the creation of Vue application
+- `./public` - website's static assets not modified by the build process
+- `./server` - API and server handlers
+- `./utils` - utility functions
+
+## CODING PRACTICES
+
+### Guidelines for CLEAN CODE
+
+- Use feedback from linters to improve the code when making changes.
+- Prioritize error handling and edge cases.
+- Handle errors and edge cases at the beginning of functions.
+- Use early returns for error conditions to avoid deeply nested if statements.
+- Place the happy path last in the function for improved readability.
+- Avoid unnecessary else statements; use if-return pattern instead.
+- Implement proper error logging and user-friendly error messages.

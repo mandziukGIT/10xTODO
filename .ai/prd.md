@@ -151,7 +151,7 @@ Kryteria akceptacji:
 
 * checkbox przy każdej pozycji
 * zapis statusu ukończenia w bazie
-* ukończenie zadania sprawia, ze jego zadania równiez zostały ukończone
+* ukończenie zadania sprawia, ze jego podzadania równiez zostały ukończone
 
 ## 6. Metryki sukcesu
 
