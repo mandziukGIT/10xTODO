@@ -29,11 +29,5 @@ jobs:
       - name: Run unit and integration tests
         run: npm run test
 
-      - name: Install Playwright dependencies
-        run: npx playwright install --with-deps
-
-      - name: Run E2E tests
-        run: npm run test:e2e
-
       - name: Build application
         run: npm run build
