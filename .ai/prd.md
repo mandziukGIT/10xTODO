@@ -2,7 +2,7 @@
 
 ## 1. Przegląd produktu
 
-Planer AI wspomagany LLM to narzędzie umożliwiające użytkownikom szybkie i efektywne rozbijanie złożonych celów lub problemów na konkretne zadania i podzadania. Dzięki integracji z dużym modelem językowym (LLM) użytkownik otrzymuje wstępne propozycje kroków do wykonania, które może zaakceptować, edytować lub rozbić na bardziej szczegółowe podzadania. Aplikacja wspiera zarządzanie jedną główną listą zadań z możliwością dwupoziomowego zagnieżdżenia, oferując prosty system kont oraz sesje generowania AI.
+Planer AI wspomagany LLM to narzędzie umożliwiające użytkownikom szybkie i efektywne rozbijanie złożonych celów lub problemów na konkretne zadania i podzadania. Dzięki integracji z dużym modelem językowym (LLM) użytkownik otrzymuje wstępne propozycje kroków do wykonania, które może zaakceptować, edytować. Aplikacja wspiera zarządzanie jedną główną listą zadań z możliwością dwupoziomowego zagnieżdżenia, oferując prosty system kont oraz sesje generowania AI.
 
 ## 2. Problem użytkownika
 
@@ -24,13 +24,12 @@ Użytkownicy często planują zadania ogólnikowo, nie rozbijając złożonych c
 3.2. Zarządzanie zadaniami
 
 * F5: wyświetlanie głównej listy zadań z możliwością zagnieżdżania podzadań do 2 poziomów
-* F6: CRUD zadań i podzadań: dodawanie, edytowanie, usuwanie (limit 10 zadań 1. poziomu i 5 zadań 2. poziomu)
+* F6: CRUD zadań i podzadań: dodawanie, edytowanie, usuwanie (limit 10 zadań 1. poziomu)
 * F7: oznaczanie dowolnego zadania lub podzadania jako ukończone
 
 3.3. Akceptacja i edycja propozycji AI
 
 * F8: każda propozycja zadania może zostać ręcznie edytowana
-* F9: każda propozycja może być rozbita przez AI na 2–4 mniejsze zadania po kliknięciu przycisku znajdującego się przy kazdej propozycji pierwszego stopnia
 * F10: usunięcie pojedynczej propozycji bez wpływu na inne, chyba ze posiada podzadania. Wtedy usunięcie zadania usuwa równiez podzadania
 * F11: jednoprzyciskowa akcja "Akceptuj" akceptuje wszystkie propozycje i zapisuje je do głównej listy jako zadanie z pozadaniami
 * F12: akcja "Odrzuć" uruchamia modal potwierdzenia zakończenia sesji; odrzucone zadania są bezpowrotnie usuwane
@@ -54,19 +53,23 @@ US-001  Tytuł: Rejestracja nowego użytkownika
 Opis: Jako nowy użytkownik chcę założyć konto, aby zabezpieczyć dostęp do moich zadań.
 Kryteria akceptacji:
 
-* formularz rejestracji z polami email i hasło
+* formularz rejestracji z polami email i hasło na dedykowanej podstronie
 * walidacja formatu email i minimalnej długości hasła
-* konto tworzone w bazie danych
+* konto tworzone w bazie danych (supabase auth)
+* mail z potwierdzeniem zalozenia konta
 * przekierowanie do widoku listy po udanej rejestracji
 
 US-002  Tytuł: Logowanie użytkownika
 Opis: Jako zarejestrowany użytkownik chcę się zalogować, aby uzyskać dostęp do moich zadań.
 Kryteria akceptacji:
 
-* formularz logowania z pola email i hasło
+* formularz logowania z pola email i hasło na dedykowanej podstronie
 * uwierzytelnianie poprzez backend (supabase auth)
 * obsługa niepoprawnych danych (komunikat o błędzie)
-* przekierowanie do widoku listy
+* przekierowanie do widoku listy po pomyślnym logowaniu 
+* niezalogowany uzytkownik trafia na stronę logowania gdzie moze się zalogować lub przejść do widoku rejestracji
+* wszystkie widoki poza widokami sluzącymi do logowania i rejestracji powinny być dostępne jedynie dla zalogowanych uzytkowników
+* uzytkownik moze wylogować się po wejściu na widok profilu uzytkownika
 
 US-003  Tytuł: Rozpoczęcie sesji planowania AI
 Opis: Jako użytkownik chcę wpisać opis celu lub problemu i kliknąć "Generuj zadania", aby uzyskać propozycje od AI.
@@ -89,14 +92,6 @@ Kryteria akceptacji:
 
 * edycja pola tekstowego dla wybranej propozycji
 * zapis zmian w sesji bez utraty innych danych
-
-US-006  Tytuł: Rozbicie propozycji na podzadania
-Opis: Jako użytkownik chcę kliknąć dedykowany przycisk przy propozycji, aby AI rozbiło ją na 2–4 mniejsze zadania.
-Kryteria akceptacji:
-
-* przycisk dostępny przy każdej propozycji
-* wywołanie API i prezentacja nowych podzadań (2–4)
-* możliwość edycji/usunięcia nowych podzadań
 
 US-007  Tytuł: Usunięcie pojedynczej propozycji
 Opis: Jako użytkownik chcę usunąć wybrane zadanie z propozycji, aby nie trafiło do głównej listy zadań przy akceptacji.

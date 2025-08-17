@@ -1,0 +1,208 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# Integracja Supabase Auth z Nuxt.js
+
+## 1. Wprowadzenie
+
+Ten dokument opisuje integrację mechanizmu uwierzytelniania Supabase (Auth) z aplikacją Nuxt (wersja 3+). Pokazuje zarówno użycie dedykowanego modułu Nuxt (wygodniejsze, zalecane) jak i ręczną integrację z biblioteką `@supabase/supabase-js`.
+
+## 2. Wymagania
+
+* Node.js (zwykle LTS, np. 18+)
+* Nuxt 3 (lub nowszy)
+* Konto w Supabase i utworzony projekt
+* Zmienna środowiskowa z `SUPABASE_URL` i `SUPABASE_ANON_KEY` (anon/public key) — nigdy nie commituj klucza serwisowego do repo!
+
+## 3. Dwa podejścia
+
+### A. Moduł Nuxt (`@nuxtjs/supabase`) — zalecane
+
+* Dostarcza gotowe composables (np. `useSupabaseClient`, `useSupabaseUser`, `useSupabaseSession`, `useSupabaseAuthClient`) oraz obsługę SSR i middleware.
+* Szybsze wdrożenie i lepsza integracja z Nuxt 3.
+
+### B. Ręczna integracja (`@supabase/supabase-js`)
+
+* Więcej kontroli (np. niestandardowa konfiguracja klienta).
+* Wymaga ręcznej obsługi synchronizacji sesji w SSR (patrz sekcja o `@supabase/ssr`).
+
+## 4. Konfiguracja środowiska
+
+Utwórz plik środowiskowy (lokalnie):
+
+```
+# .env
+SUPABASE_URL=https://<your-project>.supabase.co
+SUPABASE_ANON_KEY=eyJ... (anon/public key)
+```
+
+W Nuxt 3 użyj `runtimeConfig` (w `nuxt.config.ts`) aby wystawić wartości do klienta jako `public`.
+
+## 5. Instalacja i konfiguracja modułu `@nuxtjs/supabase` (polecane)
+
+### 1) Instalacja
+
+```bash
+npm install @nuxtjs/supabase
+# lub
+pnpm add @nuxtjs/supabase
+```
+
+### 2) Konfiguracja `nuxt.config.ts`
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@nuxtjs/supabase'],
+  runtimeConfig: {
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    }
+  },
+  supabase: {
+    // opcjonalne ustawienia modułu, np. redirect: false
+    // redirect: false
+  }
+})
+```
+
+> Moduł automatycznie zainicjalizuje klienta Supabase i udostępni composables.
+
+### 3) Dostępne composables (najważniejsze)
+
+* `useSupabaseClient()` — główny klient (`supabase`) do wywołań do DB i `auth`.
+* `useSupabaseAuthClient()` — klient skonfigurowany pod kątem flow auth (np. redirecty/confirm).
+* `useSupabaseUser()` — reaktywny obiekt `user`.
+* `useSupabaseSession()` — reaktywna sesja użytkownika.
+* `serverSupabaseClient()` / `serverSupabaseServiceRole()` — do użycia po stronie serwera.
+
+## 6. Alternatywa: ręczna integracja z `@supabase/supabase-js`
+
+Jeśli nie chcesz modułu Nuxt, możesz stworzyć klienta ręcznie.
+
+### 1) Instalacja
+
+```bash
+npm install @supabase/supabase-js
+```
+
+### 2) Plugin / composable (przykład prostego composable)
+
+```ts
+// composables/useSupabase.ts
+import { createClient } from '@supabase/supabase-js'
+
+export const useSupabase = () => {
+  const config = useRuntimeConfig()
+  const supabase = createClient(config.public.supabaseUrl, config.public.supabaseAnonKey)
+  return supabase
+}
+```
+
+Uwaga: w przypadku SSR i potrzeby przechowywania sesji w ciasteczkach rozważ użycie pakietu `@supabase/ssr` lub własnej logiki cookie.
+
+## 7. Przykłady — rejestracja, logowanie, wylogowanie
+
+Przykład użycia composables modułu Nuxt (np. `pages/login.vue`):
+
+```vue
+<script setup lang="ts">
+const auth = useSupabaseAuthClient()
+const user = useSupabaseUser()
+const email = ref('')
+const password = ref('')
+
+async function signIn() {
+  const { error } = await auth.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
+  })
+  if (error) {
+    console.error('Błąd logowania', error)
+  } else {
+    // zalogowano — możesz przekierować
+    navigateTo('/')
+  }
+}
+
+async function signOut() {
+  const authClient = useSupabaseAuthClient()
+  await authClient.auth.signOut()
+}
+</script>
+
+<template>
+  <input v-model="email" placeholder="Email" />
+  <input v-model="password" placeholder="Hasło" type="password" />
+  <button @click.prevent="signIn">Zaloguj</button>
+</template>
+```
+
+Rejestracja (signup):
+
+```ts
+const { error } = await auth.auth.signUp({
+  email: email.value,
+  password: password.value,
+  options: {
+    emailRedirectTo: 'https://your-domain.com/confirm'
+  }
+})
+```
+
+Logowanie magic link / OTP:
+
+```ts
+await auth.auth.signInWithOtp({ email: email.value })
+```
+
+## 8. Middleware i ochrona tras (SSR & CSR)
+
+### 1) Proste middleware chroniące trasę
+
+```ts
+// middleware/auth.global.ts (lub auth.ts w folderze middleware)
+export default defineNuxtRouteMiddleware(() => {
+  const user = useSupabaseUser()
+  if (!user.value) {
+    return navigateTo('/login')
+  }
+})
+```
+
+### 2) Użycie w meta strony
+
+```ts
+// pages/dashboard.vue
+definePageMeta({ middleware: 'auth' })
+```
+
+### 3) SSR: sesja w cookies
+
+Jeśli potrzebujesz, by sesja była dostępna po stronie serwera (np. przy renderowaniu SSR), skonfiguruj klienta tak, żeby używał cookie zamiast localStorage. Supabase rekomenduje pakiet `@supabase/ssr` do ułatwienia tego procesu oraz obsługi wymiany cookie ↔ session. W dokumentacji znajdują się przykłady dla różnych frameworków i wskazówki migracyjne.
+
+## 9. Bezpieczeństwo i dobre praktyki
+
+* Nigdy nie umieszczaj `SERVICE_ROLE` w kodzie frontendu.
+* Env vars z publicznymi kluczami przechowuj jako `public` w `runtimeConfig` tylko wtedy, gdy są to anon/public keys.
+* Stosuj Row Level Security (RLS) w bazie Supabase by ograniczyć dostęp do danych użytkowników.
+* Dla krytycznych operacji używaj serwerowych endpointów z `serverSupabaseServiceRole()` i zachowaj service role key wyłącznie po stronie serwera.
+
+## 10. Testowanie i rozwiązywanie problemów
+
+* Sprawdź, czy `SUPABASE_URL` i klucz są poprawne.
+* Jeśli composables (`useSupabaseClient`, `useSupabaseUser`) są undefined — upewnij się, że moduł został prawidłowo zainstalowany i zadeklarowany w `nuxt.config.ts`.
+* W przypadku problemów z redirectami OAuth/SSO sprawdź konfigurację `Redirect URLs` w dashboardzie Supabase.
+* Debug SSR: upewnij się, że sesja jest przechowywana w cookie jeśli chcesz mieć dostęp do niej po stronie serwera.
+
+## 11. Szybkie podsumowanie
+
+1. Utwórz projekt w Supabase i skopiuj `SUPABASE_URL` oraz `SUPABASE_ANON_KEY`.
+2. Najprościej: zainstaluj `@nuxtjs/supabase`, skonfiguruj `nuxt.config.ts` i `runtimeConfig`.
+3. Używaj composables (`useSupabaseAuthClient`, `useSupabaseUser`, `useSupabaseClient`) do logiki auth w komponentach.
+4. Dla SSR i zaawansowanych scenariuszy użyj `@supabase/ssr` lub serwerowych composables `serverSupabaseClient`.
+
