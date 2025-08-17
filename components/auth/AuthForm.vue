@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   title: string
   subtitle?: string
   isSubmitting?: boolean
@@ -17,7 +17,7 @@ const handleSubmit = (e: Event) => {
 </script>
 
 <template>
-  <form @submit="handleSubmit" class="mt-8 space-y-6">
+  <form class="mt-8 space-y-6" @submit="handleSubmit">
     <div class="bg-white p-8 rounded-lg shadow">
       <h2 class="text-center text-2xl font-bold text-gray-900 mb-2">{{ title }}</h2>
       <p v-if="subtitle" class="text-center text-sm text-gray-600 mb-6">{{ subtitle }}</p>
@@ -41,9 +41,9 @@ const handleSubmit = (e: Event) => {
         >
           <span v-if="isSubmitting" class="flex items-center justify-center">
             <span class="mr-2">Processing</span>
-            <div class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <div class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>
           </span>
-          <slot name="submit-text" v-else>Submit</slot>
+          <slot v-else name="submit-text">Submit</slot>
         </Button>
       </div>
       

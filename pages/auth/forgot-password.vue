@@ -34,7 +34,7 @@ const handleSubmit = async () => {
   try {
     await forgotPassword(formData.email)
     isSubmitted.value = true
-  } catch (err) {
+  } catch {
     errors.form = authError.value || 'Wystąpił błąd'
   }
 }

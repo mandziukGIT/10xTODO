@@ -11,9 +11,14 @@ const props = withDefaults(defineProps<{
   required?: boolean
   disabled?: boolean
   class?: HTMLAttributes["class"]
-  [key: string]: any // This allows passing through any other HTML input attributes
 }>(), {
-  type: 'text'
+  type: 'text',
+  defaultValue: '',
+  modelValue: '',
+  placeholder: '',
+  class: '',
+  required: false,
+  disabled: false
 })
 
 const emits = defineEmits<{

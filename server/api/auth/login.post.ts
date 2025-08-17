@@ -1,4 +1,4 @@
-import { type Database } from '~/db/database.types'
+import type { Database } from '~/db/database.types'
 import { loginSchema } from '~/server/validation/auth.schema'
 import { serverSupabaseClient } from '#supabase/server'
 

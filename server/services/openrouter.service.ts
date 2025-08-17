@@ -1,7 +1,6 @@
-import { z } from 'zod';
-import { type JSONSchema7 } from 'json-schema';
+import type { z } from 'zod';
+import type { JSONSchema7 } from 'json-schema';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import type { GenerationProposalTaskDTO } from '~/types';
 
 // Types for messages and options
 type Message = {
@@ -14,6 +13,14 @@ type RequestOptions = {
   temperature?: number;
   max_tokens?: number;
 };
+
+interface OpenRouterResponse {
+  choices: {
+    message: {
+      content: string;
+    };
+  }[];
+}
 
 export class OpenRouterService {
   private readonly apiKey: string;
@@ -61,13 +68,15 @@ export class OpenRouterService {
         console.log('Parsed JSON:', JSON.stringify(jsonData, null, 2));
         // Validate response using Zod schema
         return schema.parse(jsonData);
-      } catch (parseError: any) {
-        throw new Error(`Failed to parse JSON response from model: ${parseError?.message}`);
+      } catch (parseError: unknown) {
+        const message = parseError instanceof Error ? parseError.message : String(parseError)
+        throw new Error(`Failed to parse JSON response from model: ${message}`);
       }
-    } catch (error: any) {
-      console.error('OpenRouterService Error:', error?.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.error('OpenRouterService Error:', message);
       // Rethrow the error to be handled in the API handler
-      throw new Error(`Failed to get a valid response from OpenRouter. Details: ${error?.message}`);
+      throw new Error(`Failed to get a valid response from OpenRouter. Details: ${message}`);
     }
   }
 
@@ -106,9 +115,9 @@ export class OpenRouterService {
   /**
    * Makes a request to the OpenRouter API.
    */
-  private async makeRequest(payload: any) {
+  private async makeRequest(payload: Record<string, unknown>) {
     try {
-      return await $fetch<any>(`${this.baseUrl}/chat/completions`, {
+      return await $fetch<OpenRouterResponse>(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
@@ -118,13 +127,14 @@ export class OpenRouterService {
         },
         body: payload,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle specific HTTP error codes
-      if (error.response) {
-        const status = error.response.status;
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response) {
+        const response = error.response as { status: number, _data?: { error?: { message?: string } } };
+        const status = response.status;
         
         if (status === 400) {
-          throw new Error(`Invalid request: ${error.response._data?.error?.message || 'Bad request'}`);
+          throw new Error(`Invalid request: ${response._data?.error?.message || 'Bad request'}`);
         } else if (status === 401) {
           throw new Error('Authentication failed: Invalid API key');
         } else if (status === 429) {

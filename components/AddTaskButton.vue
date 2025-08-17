@@ -70,8 +70,8 @@ const submitForm = async () => {
 
 <template>
   <div>
-    <Button v-if="!isFormOpen" @click="openForm" class="flex items-center gap-2">
-      <span class="i-heroicons-plus-circle h-5 w-5"></span>
+    <Button v-if="!isFormOpen" class="flex items-center gap-2" @click="openForm">
+      <span class="i-heroicons-plus-circle h-5 w-5"/>
       <span>Add New Task</span>
     </Button>
     
@@ -106,8 +106,8 @@ const submitForm = async () => {
             <Button 
               type="button" 
               variant="outline" 
-              @click="closeForm"
               :disabled="isSubmitting"
+              @click="closeForm"
             >
               Cancel
             </Button>

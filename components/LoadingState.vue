@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <div class="flex items-center justify-center py-8">
-      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"/>
     </div>
     
     <p class="text-center text-gray-500">Generowanie propozycji zadań...</p>

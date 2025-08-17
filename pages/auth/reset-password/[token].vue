@@ -47,7 +47,7 @@ const handleSubmit = async () => {
     setTimeout(() => {
       navigateTo('/auth/login')
     }, 3000)
-  } catch (err) {
+  } catch {
     errors.form = authError.value || 'Wystąpił błąd'
   }
 }

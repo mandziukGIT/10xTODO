@@ -2,14 +2,16 @@
 import { ref } from 'vue'
 
 const props = withDefaults(defineProps<{
-  modelValue: string
+  modelValue?: string
   id?: string
   placeholder?: string
   error?: string
   required?: boolean
 }>(), {
   modelValue: '',
+  id: undefined,
   placeholder: 'Password',
+  error: '',
   required: false
 })
 
@@ -35,7 +37,7 @@ const inputId = props.id || 'password-field'
       :required="required"
       class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] pr-10"
       @input="(e: Event) => emit('update:modelValue', (e.target as HTMLInputElement).value)"
-    />
+    >
     <button
       type="button"
       class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"

@@ -13,7 +13,7 @@ const generationStore = useGenerationStore()
       class="flex items-center gap-2"
       @click="generationStore.openModal"
     >
-      <span class="i-heroicons-sparkles h-5 w-5"></span>
+      <span class="i-heroicons-sparkles h-5 w-5"/>
       <span>Plan with AI</span>
     </Button>
   </div>

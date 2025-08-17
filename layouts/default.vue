@@ -18,11 +18,11 @@ const handleLogout = async () => {
           <Button 
             variant="outline" 
             size="sm" 
-            @click="handleLogout" 
-            :disabled="isLoading"
+            :disabled="isLoading" 
+            @click="handleLogout"
           >
             <span v-if="isLoading" class="flex items-center">
-              <div class="h-3 w-3 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mr-1"></div>
+              <div class="h-3 w-3 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mr-1"/>
               Logging out...
             </span>
             <span v-else>Logout</span>

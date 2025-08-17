@@ -36,7 +36,7 @@ const handleSubmit = async () => {
   try {
     await register(formData.email, formData.password)
     // Success will be handled by the useAuth composable (redirect to home)
-  } catch (err) {
+  } catch {
     errors.form = authError.value || 'Wystąpił błąd podczas rejestracji'
   }
 }
@@ -109,7 +109,7 @@ const handleGithubLogin = async () => {
     </template>
 
     <template #social-buttons>
-      <Button @click="handleGithubLogin" variant="outline" class="w-full">
+      <Button variant="outline" class="w-full" @click="handleGithubLogin">
         <Icon name="mdi:github" class="mr-2 h-4 w-4" />
         GitHub
       </Button>

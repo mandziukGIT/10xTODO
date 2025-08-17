@@ -9,9 +9,8 @@ defineProps<{
 
 // Define emits for task interactions
 const emit = defineEmits<{
-  (e: 'complete' | 'delete' | 'edit' | 'cancel', taskId: string): void
+  (e: 'complete' | 'delete' | 'edit' | 'cancel' | 'add-subtask', taskId: string): void
   (e: 'save', taskId: string, title: string, description: string | null): void
-  (e: 'add-subtask', taskId: string): void
 }>()
 </script>
 

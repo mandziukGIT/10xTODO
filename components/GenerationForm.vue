@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-4">
+  <form class="space-y-4" @submit.prevent="handleSubmit">
     <div class="space-y-2">
       <label for="description" class="text-sm font-medium">
         Opisz swój cel lub problem
@@ -44,7 +44,7 @@ import { Textarea } from '@/components/ui/textarea'
 import type { CreateGenerationCommand } from '~/types'
 
 // Props
-const props = defineProps<{
+defineProps<{
   isLoading: boolean
 }>()
 
