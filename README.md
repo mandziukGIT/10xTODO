@@ -9,6 +9,7 @@ A modern web application that leverages a large language model (LLM) to help you
 - [Tech Stack](#tech-stack)
 - [Getting Started (Local)](#getting-started-local)
 - [Available Scripts](#available-scripts)
+- [Testing](#testing)
 - [Project Scope](#project-scope)
 - [Project Status](#project-status)
 - [License](#license)
@@ -32,6 +33,12 @@ A modern web application that leverages a large language model (LLM) to help you
   - [GitHub Actions](https://github.com/features/actions)
   - Docker
   - DigitalOcean
+
+- **Testing**:
+  - [Vitest](https://vitest.dev/) for unit and integration tests
+  - [Vue Test Utils](https://test-utils.vuejs.org/) for Vue component testing
+  - [Playwright](https://playwright.dev/) for end-to-end testing
+  - [Supertest](https://github.com/ladjs/supertest) & [MSW](https://mswjs.io/) for API testing
 
 ## Getting Started (Local)
 
@@ -78,6 +85,21 @@ A modern web application that leverages a large language model (LLM) to help you
 - **`npm run lint`**: Runs ESLint to check for linting issues.
 - **`npm run lint:fix`**: Automatically fixes linting issues.
 - **`npm run format`**: Formats the code using Prettier.
+
+## Testing
+
+The project uses a comprehensive testing strategy:
+
+- **Unit & Integration Tests**: Using Vitest and Vue Test Utils to test components, composables, Pinia stores, and API endpoints.
+- **End-to-End Tests**: Using Playwright to simulate real user scenarios across the entire application.
+- **API Tests**: Using Supertest and MSW (Mock Service Worker) to test and mock API endpoints.
+
+Run tests with:
+```bash
+npm run test        # Run all tests
+npm run test:unit   # Run unit tests only
+npm run test:e2e    # Run end-to-end tests only
+```
 
 ## Project Scope
 
