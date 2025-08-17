@@ -7,7 +7,7 @@ import AddTaskButton from '~/components/AddTaskButton.vue'
     <h3 class="text-xl font-medium text-gray-500">No tasks yet</h3>
     <p class="mt-2 text-gray-400">Create your first task to get started</p>
     
-    <div class="mt-6">
+    <div class="mt-6 flex justify-center">
       <AddTaskButton />
     </div>
   </div>

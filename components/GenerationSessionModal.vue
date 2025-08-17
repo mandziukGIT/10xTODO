@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="isModalOpen" @update:open="updateModalState">
-    <DialogContent class="sm:max-w-[600px] sm:max-h-[80vh]">
+    <DialogContent class="flex flex-col sm:max-w-[600px] sm:max-h-[80vh]">
       <DialogHeader class="pb-4 border-b">
         <DialogTitle class="text-xl font-bold">
           Opisz swój cel lub problem
@@ -10,7 +10,7 @@
         </DialogDescription>
       </DialogHeader>
 
-      <DialogScrollContent class="py-6">
+      <DialogScrollContent class="py-6 flex-1 min-h-0">
         <GenerationForm
           v-if="session.status === 'idle'"
           :is-loading="false"
