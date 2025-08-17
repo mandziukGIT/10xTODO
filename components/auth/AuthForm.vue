@@ -54,9 +54,6 @@ const handleSubmit = (e: Event) => {
 
       <!-- Social login buttons -->
       <div class="mt-6">
-        <p class="text-center text-sm text-gray-500">
-          Or continue with
-        </p>
         <div class="mt-2 grid grid-cols-1 gap-3">
           <slot name="social-buttons" />
         </div>

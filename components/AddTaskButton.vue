@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Plus } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -71,7 +72,7 @@ const submitForm = async () => {
 <template>
   <div>
     <Button v-if="!isFormOpen" class="flex items-center gap-2" @click="openForm">
-      <span class="i-heroicons-plus-circle h-5 w-5"/>
+      <Plus :size="20" />
       <span>Add New Task</span>
     </Button>
     

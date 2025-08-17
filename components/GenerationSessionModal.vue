@@ -1,44 +1,47 @@
 <template>
   <Dialog :open="isModalOpen" @update:open="updateModalState">
     <DialogContent class="sm:max-w-[600px] sm:max-h-[80vh]">
-      <DialogHeader>
-        <DialogTitle>Planowanie zadań z AI</DialogTitle>
-        <DialogDescription>
+      <DialogHeader class="pb-4 border-b">
+        <DialogTitle class="text-xl font-bold">
+          Opisz swój cel lub problem
+        </DialogTitle>
+        <DialogDescription class="text-gray-500 mt-2">
           Opisz swój cel, a AI wygeneruje dla Ciebie listę zadań.
         </DialogDescription>
       </DialogHeader>
 
-      <!-- Dynamiczne renderowanie zawartości w zależności od stanu sesji -->
-      <DialogScrollContent class="py-4">
-        <GenerationForm 
+      <DialogScrollContent class="py-6">
+        <GenerationForm
           v-if="session.status === 'idle'"
           :is-loading="false"
           @generate="handleGenerate"
         />
 
-        <LoadingState 
+        <LoadingState
           v-else-if="session.status === 'loading'"
         />
 
-        <ErrorState 
+        <ErrorState
           v-else-if="session.status === 'error'"
           :error-message="session.error"
           @retry="handleRetry"
         />
 
-        <ProposalList 
+        <ProposalList
           v-else-if="session.status === 'proposals'"
           :proposals="session.proposals"
           @accept-all="handleAcceptAll"
           @reject="handleReject"
         />
 
-        <div 
+        <div
           v-else-if="session.status === 'submitting'"
-          class="flex flex-col items-center justify-center py-8"
+          class="flex flex-col items-center justify-center py-10"
         >
-          <Skeleton class="h-12 w-12 rounded-full" />
-          <p class="mt-4 text-sm text-gray-500">Zapisywanie zadań...</p>
+          <Skeleton class="h-16 w-16 rounded-full" />
+          <p class="mt-6 text-sm text-gray-500">
+            Zapisywanie zadań...
+          </p>
         </div>
       </DialogScrollContent>
     </DialogContent>
@@ -46,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogScrollContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogScrollContent } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGenerationStore } from '~/stores/generation'
 import { storeToRefs } from 'pinia'

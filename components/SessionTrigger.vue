@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Brain } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { useGenerationStore } from '~/stores/generation'
 
@@ -8,12 +9,12 @@ const generationStore = useGenerationStore()
 
 <template>
   <div>
-    <Button 
-      variant="outline" 
+    <Button
+      variant="outline"
       class="flex items-center gap-2"
       @click="generationStore.openModal"
     >
-      <span class="i-heroicons-sparkles h-5 w-5"/>
+      <Brain :size="20" />
       <span>Plan with AI</span>
     </Button>
   </div>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Pencil, Trash2, PlusCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -78,7 +79,7 @@ const confirmDelete = () => {
           class="p-1 text-gray-500 hover:text-gray-700"
           @click="emit('edit', task.id)"
         >
-          <span class="i-heroicons-pencil-square h-5 w-5" />
+          <Pencil :size="20" />
         </Button>
         
         <Button 
@@ -87,7 +88,7 @@ const confirmDelete = () => {
           class="p-1 text-red-500 hover:text-red-700"
           @click="confirmDelete"
         >
-          <span class="i-heroicons-trash h-5 w-5" />
+          <Trash2 :size="20" />
         </Button>
       </div>
     </div>
@@ -158,7 +159,7 @@ const confirmDelete = () => {
         class="text-sm text-blue-500 hover:text-blue-700 p-0"
         @click="emit('add-subtask', task.id)"
       >
-                  <span class="i-heroicons-plus-circle h-4 w-4 mr-1" />
+        <PlusCircle :size="16" class="mr-1" />
         Add subtask
       </Button>
     </div>

@@ -1,7 +1,7 @@
 <template>
-  <form class="space-y-4" @submit.prevent="handleSubmit">
-    <div class="space-y-2">
-      <label for="description" class="text-sm font-medium">
+  <form class="space-y-6" @submit.prevent="handleSubmit">
+    <div class="space-y-3">
+      <label for="description" class="sr-only">
         Opisz swój cel lub problem
       </label>
       <Textarea
@@ -13,7 +13,7 @@
         rows="6"
       />
       
-      <div class="flex justify-between text-xs text-gray-500">
+      <div class="flex justify-between text-xs text-gray-500 mt-2">
         <span v-if="isError" class="text-red-500">
           Opis musi zawierać od 100 do 500 znaków
         </span>
@@ -26,10 +26,11 @@
       </div>
     </div>
 
-    <div class="flex justify-end">
+    <div class="flex justify-end pt-2">
       <Button 
         type="submit" 
         :disabled="!isValid || isLoading"
+        class="px-6 py-2"
       >
         Generuj zadania
       </Button>
