@@ -20,13 +20,26 @@ describe('Tasks Store', () => {
   })
 
   it('should create a top-level task', async () => {
-    mockFetch.mockResolvedValue({ id: MOCK_TASK_ID })
+    mockFetch.mockResolvedValue({ 
+      id: MOCK_TASK_ID,
+      title: 'Test Task',
+      description: 'Test Description',
+      source: 'manual',
+      completed: false,
+      createdAt: '2023-01-01T00:00:00Z',
+      parentTaskId: null,
+      position: 1,
+      subtasks: []
+    })
     
     const store = useTasks()
     const command: CreateTaskCommand = {
       title: 'Test Task',
       description: 'Test Description',
-      source: 'manual'
+      source: 'manual',
+      parentTaskId: null,
+      generationId: null,
+      position: 1
     }
 
     await store.createTask(command)
