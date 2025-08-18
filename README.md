@@ -96,9 +96,9 @@ The project uses a comprehensive testing strategy:
 
 Run tests with:
 ```bash
-npm run test        # Run all tests
-npm run test:unit   # Run unit tests only
-npm run test:e2e    # Run end-to-end tests only
+npm run test        # Run unit & integration tests
+npm run test:watch  # Run unit & integration tests in watch mode
+npm run test:e2e    # Run end-to-end tests
 ```
 
 ## Project Scope
