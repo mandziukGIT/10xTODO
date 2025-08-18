@@ -27,9 +27,11 @@ export const useAuth = () => {
       
       if (supabaseError) throw supabaseError
       
-      // Przekierowanie na stronę główną zostanie obsłużone przez moduł Supabase
+      await navigateTo('/')
     } catch (err: unknown) {
-      console.error(err)
+      const errorMsg = (err as Error).message || 'Wystąpił nieznany błąd'
+      error.value = errorMsg
+      throw error.value
     } finally {
       isLoading.value = false
     }
@@ -135,28 +137,6 @@ export const useAuth = () => {
     }
   }
 
-  const loginWithGithub = async () => {
-    error.value = null
-    isLoading.value = true
-
-    try {
-      const { error: supabaseError } = await client.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/`
-        }
-      })
-
-      if (supabaseError) throw supabaseError
-    }
-    catch (err: unknown) {
-      console.error(err)
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
   return {
     user: supabaseUser,
     isLoading: readonly(isLoading),
@@ -166,7 +146,6 @@ export const useAuth = () => {
     login,
     logout,
     forgotPassword,
-    resetPassword,
-    loginWithGithub
+    resetPassword
   }
 }

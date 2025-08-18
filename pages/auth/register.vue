@@ -9,7 +9,7 @@ definePageMeta({
   noAuth: true
 })
 
-const { register, loginWithGithub, isLoading, error: authError } = useAuth()
+const { register, isLoading, error: authError } = useAuth()
 const { validateRegister } = useFormValidation()
 
 const formData = reactive<RegisterInput>({
@@ -39,10 +39,6 @@ const handleSubmit = async () => {
   } catch {
     errors.form = authError.value || 'Wystąpił błąd podczas rejestracji'
   }
-}
-
-const handleGithubLogin = async () => {
-  await loginWithGithub()
 }
 </script>
 
@@ -106,13 +102,6 @@ const handleGithubLogin = async () => {
           Zaloguj się
         </NuxtLink>
       </p>
-    </template>
-
-    <template #social-buttons>
-      <Button variant="outline" class="w-full" @click="handleGithubLogin">
-        <Icon name="mdi:github" class="mr-2 h-4 w-4" />
-        GitHub
-      </Button>
     </template>
   </AuthForm>
 </template>
