@@ -9,7 +9,7 @@ defineProps<{
 
 // Define emits for task interactions
 const emit = defineEmits<{
-  (e: 'complete' | 'delete' | 'edit' | 'cancel' | 'add-subtask', taskId: string): void
+  (e: 'complete' | 'delete' | 'edit' | 'cancel', taskId: string): void
   (e: 'save', taskId: string, title: string, description: string | null): void
 }>()
 </script>
@@ -25,7 +25,6 @@ const emit = defineEmits<{
       @edit="(id) => emit('edit', id)"
       @save="(id, title, description) => emit('save', id, title, description)"
       @cancel="(id) => emit('cancel', id)"
-      @add-subtask="(id) => emit('add-subtask', id)"
     />
   </div>
 </template>

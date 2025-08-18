@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import AddTaskButton from '~/components/AddTaskButton.vue'
+
+const emit = defineEmits(['add-task'])
 </script>
 
 <template>
@@ -8,7 +10,7 @@ import AddTaskButton from '~/components/AddTaskButton.vue'
     <p class="mt-2 text-gray-400">Create your first task to get started</p>
     
     <div class="mt-6 flex justify-center">
-      <AddTaskButton />
+      <AddTaskButton @click="emit('add-task')" />
     </div>
   </div>
 </template>

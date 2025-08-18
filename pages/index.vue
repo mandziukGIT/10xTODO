@@ -6,29 +6,28 @@ import TaskList from '~/components/TaskList.vue'
 import AddTaskButton from '~/components/AddTaskButton.vue'
 import SessionTrigger from '~/components/SessionTrigger.vue'
 import GenerationSessionModal from '~/components/GenerationSessionModal.vue'
+import TaskForm from '~/components/TaskForm.vue'
 
 // Initialize the tasks store
 const tasksStore = useTasks()
+const showTaskForm = ref(false)
 
 // Fetch tasks on component mount
 onMounted(async () => {
   await tasksStore.fetchTasks()
 })
 
-// Handler for adding subtasks
-const handleAddSubtask = (parentId: string) => {
-  // This will be implemented later with a modal or inline form
-  console.log('Add subtask to parent:', parentId)
-  
-  // For now, we'll just create a simple subtask
+// Handler for creating a new task
+const handleCreateTask = (title: string, description: string | null) => {
   tasksStore.createTask({
-    title: 'New subtask',
-    description: '',
-    parentTaskId: parentId,
+    title,
+    description,
+    parentTaskId: null,
     source: 'manual',
     generationId: null,
     position: 1
   })
+  showTaskForm.value = false
 }
 </script>
 
@@ -39,12 +38,19 @@ const handleAddSubtask = (parentId: string) => {
       <div class="flex gap-4">
         <SessionTrigger />
         
-        <AddTaskButton />
+        <AddTaskButton @click="showTaskForm = true"/>
       </div>
     </header>
     
     <!-- Modal sesji planowania AI -->
     <GenerationSessionModal />
+    
+    <TaskForm 
+      v-if="showTaskForm" 
+      class="mb-4"
+      @save="handleCreateTask"
+      @cancel="showTaskForm = false"
+    />
     
     <main>
       <!-- Conditional rendering based on loading state and tasks availability -->
@@ -64,8 +70,8 @@ const handleAddSubtask = (parentId: string) => {
         </div>
       </div>
       
-      <div v-else-if="tasksStore.tasks.length === 0" class="empty-list">
-        <EmptyList />
+      <div v-else-if="tasksStore.tasks.length === 0 && !showTaskForm" class="empty-list">
+        <EmptyList @add-task="showTaskForm = true" />
       </div>
       
       <div v-else class="task-list">
@@ -76,7 +82,6 @@ const handleAddSubtask = (parentId: string) => {
           @edit="tasksStore.setEditingState($event, true)"
           @save="(id, title, description) => tasksStore.updateTask(id, { title, description })"
           @cancel="(id) => tasksStore.setEditingState(id, false)"
-          @add-subtask="handleAddSubtask"
         />
       </div>
     </main>

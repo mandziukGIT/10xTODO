@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import type { TaskViewModel } from '~/types'
+import { useTasks } from '~/stores/tasks'
+import TaskForm from '~/components/TaskForm.vue'
 
 const props = defineProps<{
   task: TaskViewModel
@@ -12,9 +14,12 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'complete' | 'delete' | 'cancel' | 'edit' | 'add-subtask', taskId: string): void
-  (e: 'save', taskId: string, title: string, description: string | null): void
+  (e: 'complete' | 'delete' | 'cancel' | 'edit', taskId: string): void
+  (e: 'save', taskId:string, title: string, description: string | null): void
 }>()
+
+const tasksStore = useTasks()
+const showSubtaskForm = ref(false)
 
 const editForm = reactive({
   title: props.task.title,
@@ -33,7 +38,6 @@ const validateForm = (): boolean => {
 
 const handleSave = () => {
   if (!validateForm()) return
-  
   emit('save', props.task.id, editForm.title.trim(), editForm.description.trim() || null)
 }
 
@@ -50,6 +54,18 @@ const confirmDelete = () => {
   if (confirm('Are you sure you want to delete this task?')) {
     emit('delete', props.task.id)
   }
+}
+
+const handleCreateSubtask = (title: string, description: string | null) => {
+  tasksStore.createTask({
+    title,
+    description,
+    parentTaskId: props.task.id,
+    source: 'manual',
+    generationId: null,
+    position: 1
+  })
+  showSubtaskForm.value = false
 }
 </script>
 
@@ -149,21 +165,27 @@ const confirmDelete = () => {
         @edit="(id) => emit('edit', id)"
         @save="(id, title, description) => emit('save', id, title, description)"
         @cancel="(id) => emit('cancel', id)"
-        @add-subtask="(id) => emit('add-subtask', id)"
       />
     </div>
     
     <!-- Add subtask button -->
     <div v-if="!task.isEdited && !task.completed && !isSubtask" class="mt-2 ml-6">
-      <Button 
+      <Button
+        v-if="!showSubtaskForm"
         variant="link"
         size="sm"
         class="text-sm text-blue-500 hover:text-blue-700 p-0"
-        @click="emit('add-subtask', task.id)"
+        @click="showSubtaskForm = true"
       >
         <PlusCircle :size="16" class="mr-1" />
         Add subtask
       </Button>
+      <TaskForm 
+        v-else
+        class="mt-2"
+        @save="handleCreateSubtask"
+        @cancel="showSubtaskForm = false"
+      />
     </div>
   </div>
 </template>

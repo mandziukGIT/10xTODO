@@ -5,7 +5,8 @@ import type {
   CreateTaskCommand, 
   UpdateTaskCommand,
   GetTasksResponseDTO,
-  TaskViewModel
+  TaskViewModel,
+  CreateTaskResponseDTO
 } from '~/types'
 
 export const useTasks = defineStore('tasks', () => {
@@ -80,66 +81,33 @@ export const useTasks = defineStore('tasks', () => {
   }
 
   const createTask = async (command: CreateTaskCommand) => {
+
     try {
-      // Optimistic update
-      const tempId = `temp-${Date.now()}`
-      const newTask: TaskViewModel = {
-        id: tempId,
-        title: command.title,
-        description: command.description || null,
-        source: command.source,
-        completed: false,
-        createdAt: new Date().toISOString(),
-        isEdited: false,
-        subtasks: []
-      }
-
-      // Add to appropriate location based on parentTaskId
-      if (command.parentTaskId) {
-        // Add as subtask
-        const parentTask = getTaskById(command.parentTaskId)
-        if (parentTask) {
-          parentTask.subtasks.push(newTask)
-        }
-      } else {
-        // Add as top-level task
-        tasks.value.push(newTask)
-      }
-
-      // Call API
-      const response = await $fetch('/api/tasks', {
+      const response = await $fetch<CreateTaskResponseDTO>('/api/tasks', {
         method: 'POST',
-        body: command
+        body: {
+          ...command
+        }
       })
+      
+      const newTask: TaskViewModel = {
+        ...response,
+        isEdited: false,
+        subtasks: [],
+        completed: false,
+      }
 
-      // Update with real ID from response
       if (command.parentTaskId) {
         const parentTask = getTaskById(command.parentTaskId)
         if (parentTask) {
-          const index = parentTask.subtasks.findIndex(t => t.id === tempId)
-          if (index !== -1) {
-            parentTask.subtasks[index].id = response.id
-          }
+          parentTask.subtasks.unshift(newTask)
         }
       } else {
-        const index = tasks.value.findIndex(t => t.id === tempId)
-        if (index !== -1) {
-          tasks.value[index].id = response.id
-        }
+        tasks.value.unshift(newTask)
       }
 
       return response.id
     } catch (err) {
-      // Revert optimistic update
-      if (command.parentTaskId) {
-        const parentTask = getTaskById(command.parentTaskId)
-        if (parentTask) {
-          parentTask.subtasks = parentTask.subtasks.filter(t => !t.id.startsWith('temp-'))
-        }
-      } else {
-        tasks.value = tasks.value.filter(t => !t.id.startsWith('temp-'))
-      }
-
       error.value = 'Failed to create task. Please try again.'
       console.error('Error creating task:', err)
       throw err
@@ -181,6 +149,9 @@ export const useTasks = defineStore('tasks', () => {
   }
 
   const deleteTask = async (taskId: string) => {
+    const task = getTaskById(taskId)
+    if (!task) return
+
     // Find if it's a top-level task or a subtask
     const topLevelIndex = tasks.value.findIndex(t => t.id === taskId)
     let parentTask: TaskViewModel | undefined
