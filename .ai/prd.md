@@ -1,8 +1,8 @@
-# Dokument wymagań produktu (PRD) - Planer AI wspomagany LLM
+# Dokument wymagań produktu (PRD) - TODO-10x
 
 ## 1. Przegląd produktu
 
-Planer AI wspomagany LLM to narzędzie umożliwiające użytkownikom szybkie i efektywne rozbijanie złożonych celów lub problemów na konkretne zadania i podzadania. Dzięki integracji z dużym modelem językowym (LLM) użytkownik otrzymuje wstępne propozycje kroków do wykonania, które może zaakceptować, edytować. Aplikacja wspiera zarządzanie jedną główną listą zadań z możliwością dwupoziomowego zagnieżdżenia, oferując prosty system kont oraz sesje generowania AI.
+Planer AI wspomagany LLM to narzędzie umożliwiające użytkownikom szybkie i efektywne rozbijanie złożonych celów lub problemów na konkretne zadania i podzadania. Dzięki integracji z dużym modelem językowym (LLM) użytkownik otrzymuje wstępne propozycje kroków do wykonania, które może zaakceptować, edytować. Aplikacja wspiera zarządzanie jedną główną listą zadań z możliwością zagnieżdżenia, oferując prosty system kont oraz sesje generowania AI.
 
 ## 2. Problem użytkownika
 
@@ -17,28 +17,26 @@ Użytkownicy często planują zadania ogólnikowo, nie rozbijając złożonych c
 3.1. Sesja planowania AI
 
 * F1: użytkownik otwiera modal planowania i wpisuje opis celu/problemu
-* F2: walidacja inputu pod kątem relewantności i złożoności przez LLM; w razie konieczności zwraca komunikat o błędzie i ogólne wskazówki
-* F3: po kliknięciu przycisku "Generuj zadania" i po walidacji następuje wywołanie API LLM które generuje 4–8 propozycji zadań
-* F4: sesja trwa do momentu akceptacji lub odrzucenia; stan sesji jest przechowywany przy zamknięciu modalu
+* F2: po kliknięciu przycisku "Generuj zadania" następuje wywołanie API LLM które generuje 4–8 propozycji zadań
+* F3: sesja trwa do momentu akceptacji lub odrzucenia; stan sesji jest przechowywany przy zamknięciu modalu
 
 3.2. Zarządzanie zadaniami
 
-* F5: wyświetlanie głównej listy zadań z możliwością zagnieżdżania podzadań do 2 poziomów
-* F6: CRUD zadań i podzadań: dodawanie, edytowanie, usuwanie (limit 10 zadań 1. poziomu)
-* F7: oznaczanie dowolnego zadania lub podzadania jako ukończone
+* F4: wyświetlanie głównej listy zadań z możliwością zagnieżdżania podzadań
+* F5: CRUD zadań i podzadań: dodawanie, edytowanie, usuwanie
+* F6: oznaczanie dowolnego zadania lub podzadania jako ukończone
 
 3.3. Akceptacja i edycja propozycji AI
 
-* F8: każda propozycja zadania może zostać ręcznie edytowana
-* F10: usunięcie pojedynczej propozycji bez wpływu na inne, chyba ze posiada podzadania. Wtedy usunięcie zadania usuwa równiez podzadania
-* F11: jednoprzyciskowa akcja "Akceptuj" akceptuje wszystkie propozycje i zapisuje je do głównej listy jako zadanie z pozadaniami
-* F12: akcja "Odrzuć" uruchamia modal potwierdzenia zakończenia sesji; odrzucone zadania są bezpowrotnie usuwane
+* F7: każda propozycja zadania może zostać ręcznie edytowana lub usunięta
+* F8: jednoprzyciskowa akcja "Akceptuj" akceptuje wszystkie propozycje i zapisuje je do głównej listy jako zadanie z pozadaniami
+* F9: akcja "Odrzuć" uruchamia modal potwierdzenia zakończenia sesji; odrzucone zadania są bezpowrotnie usuwane
 
 3.4. Konta i uwierzytelnianie
 
-* F13: prosty system rejestracji i logowania (email + hasło)
-* F14: zabezpieczenie dostępu do sesji i zadań wyłącznie dla zalogowanego użytkownika
-* F15: możliwość usunięcia konta i powiązanych fiszek na życzenie
+* F10: prosty system rejestracji i logowania (email + hasło)
+* F11: zabezpieczenie dostępu do sesji i zadań wyłącznie dla zalogowanego użytkownika
+* F12: możliwość usunięcia konta i powiązanych zadań
 
 ## 4. Granice produktu
 
@@ -56,7 +54,6 @@ Kryteria akceptacji:
 * formularz rejestracji z polami email i hasło na dedykowanej podstronie
 * walidacja formatu email i minimalnej długości hasła
 * konto tworzone w bazie danych (supabase auth)
-* mail z potwierdzeniem zalozenia konta
 * przekierowanie do widoku listy po udanej rejestracji
 
 US-002  Tytuł: Logowanie użytkownika
@@ -68,22 +65,22 @@ Kryteria akceptacji:
 * obsługa niepoprawnych danych (komunikat o błędzie)
 * przekierowanie do widoku listy po pomyślnym logowaniu 
 * niezalogowany uzytkownik trafia na stronę logowania gdzie moze się zalogować lub przejść do widoku rejestracji
-* wszystkie widoki poza widokami sluzącymi do logowania i rejestracji powinny być dostępne jedynie dla zalogowanych uzytkowników
-* uzytkownik moze wylogować się po wejściu na widok profilu uzytkownika
+* wszystkie widoki poza widokami słuzącymi do logowania i rejestracji powinny być dostępne jedynie dla zalogowanych uzytkowników
+* uzytkownik moze wylogować za pomocą dedykowanego przycisku w głównym headerze
 
 US-003  Tytuł: Rozpoczęcie sesji planowania AI
 Opis: Jako użytkownik chcę wpisać opis celu lub problemu i kliknąć "Generuj zadania", aby uzyskać propozycje od AI.
 Kryteria akceptacji:
 
 * modal zawierający pole opisu i przycisk
-* walidacja inputu przed generowaniem zadań lecz po naciśnięciu przycisku "Generuj zadania" 
+* walidacja inputu przed generowaniem zadań
 * wywołanie API LLM zwraca 4–8 propozycji
 
 US-004  Tytuł: Wznowienie sesji planowania
 Opis: Jako użytkownik chcę móc zamknąć modal i wrócić do trwającej sesji, aby kontynuować edycję propozycji.
 Kryteria akceptacji:
 
-* stan propozycji zapisany lokalnie lub w bazie
+* stan propozycji zapisany lokalnie
 * otwarcie modalu przywraca ostatni stan sesji
 
 US-005  Tytuł: Edycja pojedynczej propozycji
@@ -120,7 +117,7 @@ US-010  Tytuł: Dodawanie nowego zadania lub podzadania ręcznie
 Opis: Jako użytkownik chcę dodać własne zadanie lub podzadanie do głównej listy, aby uwzględnić niestandardowe kroki.
 Kryteria akceptacji:
 
-* przycisk "Nowe zadanie" na górze widoku listy w przypadku zadania lub ikona z plusem na istniejącym już zadaniu lub podzadaniu 1. stopnia
+* przycisk "Nowe zadanie" na górze widoku listy w przypadku zadania lub ikona z plusem na istniejącym już zadaniu
 * formularz z polami tytuł i opis
 * zapis nowego zadania w bazie
 
@@ -150,6 +147,6 @@ Kryteria akceptacji:
 
 ## 6. Metryki sukcesu
 
-* M1: 75 procent zadań w głównej liście wygenerowanych przez AI (flaga ai\_generated = true)
-* M2: 75 procent wygenerowanych propozycji zaakceptowanych bez modyfikacji (edited\_at = null)
+* M1: 75 procent zadań w głównej liście wygenerowanych przez AI
+* M2: 75 procent wygenerowanych propozycji zaakceptowanych bez modyfikacji
 

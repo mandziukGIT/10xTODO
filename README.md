@@ -108,13 +108,13 @@ This application supports:
 * **AI-guided planning sessions**:
 
   * Input a goal/problem → validate → generate 4–8 task proposals via LLM
-  * Iterate: edit proposals, split into subtasks, delete as needed
+  * Iterate: edit proposals, delete as needed
   * Session persistence until accept/reject
 
 * **Task & subtask management**:
 
-  * Single task list with up to two levels of subtasks
-  * CRUD operations (limits: 10 top-level, 5 second-level)
+  * Single task list with subtasks
+  * CRUD operations
   * Mark tasks/subtasks as complete
 
 * **User accounts & authentication**:
