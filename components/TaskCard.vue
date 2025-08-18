@@ -8,6 +8,7 @@ import type { TaskViewModel } from '~/types'
 
 const props = defineProps<{
   task: TaskViewModel
+  isSubtask?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -142,6 +143,7 @@ const confirmDelete = () => {
         v-for="subtask in task.subtasks"
         :key="subtask.id"
         :task="subtask"
+        :is-subtask="true"
         @complete="(id) => emit('complete', id)"
         @delete="(id) => emit('delete', id)"
         @edit="(id) => emit('edit', id)"
@@ -152,7 +154,7 @@ const confirmDelete = () => {
     </div>
     
     <!-- Add subtask button -->
-    <div v-if="!task.isEdited && !task.completed" class="mt-2 ml-6">
+    <div v-if="!task.isEdited && !task.completed && !isSubtask" class="mt-2 ml-6">
       <Button 
         variant="link"
         size="sm"
