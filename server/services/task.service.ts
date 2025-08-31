@@ -35,15 +35,12 @@ export class TaskService {
   async getTasks(
     userId: string,
     page: number = 1,
-    limit: number = 20,
+    limit: number = 20
   ): Promise<GetTasksResponseDTO> {
     // Validate pagination parameters
-    if (page < 1)
-      page = 1
-    if (limit < 1)
-      limit = 20
-    if (limit > 100)
-      limit = 100
+    if (page < 1) page = 1
+    if (limit < 1) limit = 20
+    if (limit > 100) limit = 100
 
     // Calculate offset
     const offset = (page - 1) * limit
@@ -86,7 +83,9 @@ export class TaskService {
 
       const { data: allSubtasks, error: subtasksError } = await this.supabase
         .from('tasks')
-        .select('id, title, description, source, completed, created_at, parent_task_id')
+        .select(
+          'id, title, description, source, completed, created_at, parent_task_id'
+        )
         .eq('user_id', userId)
         .in('parent_task_id', parentIds)
         .order('created_at', { ascending: false })
@@ -102,9 +101,8 @@ export class TaskService {
       // 4. Group subtasks by parent_task_id
       const subtasksByParentId: Record<string, SubtaskListItemDTO> = {}
 
-      allSubtasks.forEach((subtask) => {
-        if (!subtask.parent_task_id)
-          return
+      allSubtasks.forEach(subtask => {
+        if (!subtask.parent_task_id) return
 
         if (!subtasksByParentId[subtask.parent_task_id])
           subtasksByParentId[subtask.parent_task_id] = []
@@ -139,8 +137,7 @@ export class TaskService {
           total: totalCount || 0,
         },
       }
-    }
-    catch (error) {
+    } catch (error) {
       if (error instanceof Error)
         console.error('Error in getTasks:', error?.message)
 
@@ -165,7 +162,7 @@ export class TaskService {
    */
   async createTask(
     command: CreateTaskCommand,
-    userId: string,
+    userId: string
   ): Promise<CreateTaskResponseDTO> {
     // Check if parentTaskId exists and belongs to the user
     if (command.parentTaskId) {
@@ -278,7 +275,7 @@ export class TaskService {
    */
   async deleteTask(
     taskId: string,
-    userId: string,
+    userId: string
   ): Promise<DeleteTaskResponseDTO> {
     try {
       // 1. Check if task exists and belongs to the user
@@ -334,8 +331,7 @@ export class TaskService {
       return {
         message: 'Task deleted successfully',
       }
-    }
-    catch (error) {
+    } catch (error) {
       // Re-throw if it's already an H3Error
       if (error && typeof error === 'object' && 'statusCode' in error)
         throw error
@@ -359,7 +355,7 @@ export class TaskService {
   async updateTask(
     taskId: string,
     command: UpdateTaskCommand,
-    userId: string,
+    userId: string
   ): Promise<UpdateTaskResponseDTO> {
     try {
       // Check if task exists and belongs to the user
@@ -403,11 +399,9 @@ export class TaskService {
         description: updatedTask.description,
         updatedAt: new Date().toISOString(),
       }
-    }
-    catch (error) {
+    } catch (error) {
       // Re-throw H3Error
-      if (error instanceof H3Error)
-        throw error
+      if (error instanceof H3Error) throw error
 
       console.error('Unexpected error in updateTask:', error)
       throw createError({
@@ -419,7 +413,7 @@ export class TaskService {
 
   async completeTask(
     taskId: string,
-    userId: string,
+    userId: string
   ): Promise<CompleteTaskResponseDTO> {
     try {
       // 1. Check if task exists and belongs to the user
@@ -464,7 +458,10 @@ export class TaskService {
           .eq('user_id', userId)
 
         if (subtasksUpdateError) {
-          console.error('Error updating subtasks completion status:', subtasksUpdateError)
+          console.error(
+            'Error updating subtasks completion status:',
+            subtasksUpdateError
+          )
           throw createError({
             statusCode: 500,
             statusMessage: 'Failed to update subtasks completion status',
@@ -476,8 +473,7 @@ export class TaskService {
       return {
         message: 'Task completion status updated successfully',
       }
-    }
-    catch (error) {
+    } catch (error) {
       // Re-throw if it's already an H3Error
       if (error && typeof error === 'object' && 'statusCode' in error)
         throw error
@@ -491,4 +487,3 @@ export class TaskService {
     }
   }
 }
-

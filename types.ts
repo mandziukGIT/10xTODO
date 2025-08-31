@@ -6,22 +6,18 @@
  * guarantee consistency between API DTOs and the underlying schema.
  */
 
-import type {
-  Tables,
-  TablesInsert,
-  Enums,
-} from "./db/database.types"
+import type { Tables, TablesInsert, Enums } from './db/database.types'
 
 // -----------------------------------------------------------------------------
 // Entity aliases (DB-anchored)
 // -----------------------------------------------------------------------------
 
-type TaskRow = Tables<"tasks">
-type TaskInsert = TablesInsert<"tasks">
-type GenerationProcessRow = Tables<"generation_process">
-type GenerationProcessErrorLogRow = Tables<"generation_process_error_logs">
+type TaskRow = Tables<'tasks'>
+type TaskInsert = TablesInsert<'tasks'>
+type GenerationProcessRow = Tables<'generation_process'>
+type GenerationProcessErrorLogRow = Tables<'generation_process_error_logs'>
 
-export type TaskSource = Enums<"task_source">
+export type TaskSource = Enums<'task_source'>
 
 // -----------------------------------------------------------------------------
 // Shared helpers
@@ -30,16 +26,16 @@ export type TaskSource = Enums<"task_source">
 /**
  * Base representation for a task-like object in API space (camelCase),
  * derived from `TaskRow`. We intentionally omit internal fields such as
- * `user_id`, `generation_id`, `parent_task_id`, and `position` from the
+ * `user_id`, `generation_id`, `parent_task_id` from the
  * public API surface.
  */
 export type TaskDTOBase = {
-  id: TaskRow["id"]
-  title: TaskRow["title"]
-  description: TaskRow["description"]
-  source: TaskRow["source"]
-  completed: TaskRow["completed"]
-  createdAt: TaskRow["created_at"]
+  id: TaskRow['id']
+  title: TaskRow['title']
+  description: TaskRow['description']
+  source: TaskRow['source']
+  completed: TaskRow['completed']
+  createdAt: TaskRow['created_at']
 }
 
 /**
@@ -86,20 +82,20 @@ export type GetTaskDetailsResponseDTO = TaskListItemDTO
  * POST /tasks response
  */
 export type CreateTaskResponseDTO = {
-  id: TaskRow["id"]
-  title: TaskRow["title"]
-  description: TaskRow["description"]
-  source: TaskRow["source"]
-  createdAt: TaskRow["created_at"]
+  id: TaskRow['id']
+  title: TaskRow['title']
+  description: TaskRow['description']
+  source: TaskRow['source']
+  createdAt: TaskRow['created_at']
 }
 
 /**
  * PUT /tasks/{taskId} response
  */
 export type UpdateTaskResponseDTO = {
-  id: TaskRow["id"]
-  title: TaskRow["title"]
-  description: TaskRow["description"]
+  id: TaskRow['id']
+  title: TaskRow['title']
+  description: TaskRow['description']
   /**
    * Note: `updatedAt` is an API-level timestamp. It is not stored explicitly
    * in the current DB schema and may be synthesized by the server.
@@ -128,16 +124,14 @@ export type CompleteTaskResponseDTO = {
 /**
  * POST /tasks request body
  * - Anchored to `TaskInsert` property types while exposing camelCase fields.
- * - The server is responsible for setting internal fields such as `position`,
- *   `user_id` and (optionally) `generation_id`.
+ * - The server is responsible for setting internal fields such as `user_id` and (optionally) `generation_id`.
  */
 export type CreateTaskCommand = {
-  title: TaskInsert["title"]
-  description?: TaskInsert["description"]
-  parentTaskId: TaskInsert["parent_task_id"] | null
-  source: TaskInsert["source"]
-  generationId: TaskInsert["generation_id"] | null
-  position: TaskInsert["position"]
+  title: TaskInsert['title']
+  description?: TaskInsert['description']
+  parentTaskId: TaskInsert['parent_task_id'] | null
+  source: TaskInsert['source']
+  generationId: TaskInsert['generation_id'] | null
 }
 
 /**
@@ -145,8 +139,8 @@ export type CreateTaskCommand = {
  * - We allow `description` to be nullable to support clearing the description.
  */
 export type UpdateTaskCommand = {
-  title: TaskRow["title"]
-  description: TaskRow["description"]
+  title: TaskRow['title']
+  description: TaskRow['description']
 }
 
 /**
@@ -171,19 +165,19 @@ export type CreateGenerationCommand = {
  * generally be `"ai_full"`, but we type it as `TaskSource` for completeness.
  */
 export type GenerationProposalTaskDTO = {
-  title: TaskInsert["title"]
-  description?: TaskInsert["description"]
-  source: "ai_full" // Zawężamy typ do konkretnej wartości, ponieważ AI zawsze generuje z source="ai_full"
+  title: TaskInsert['title']
+  description?: TaskInsert['description']
+  source: 'ai_full' // Zawężamy typ do konkretnej wartości, ponieważ AI zawsze generuje z source="ai_full"
 }
 
 /**
  * POST /generations response
  */
 export type CreateGenerationResponseDTO = {
-  generationId: GenerationProcessRow["id"]
+  generationId: GenerationProcessRow['id']
   tasks: GenerationProposalTaskDTO[]
-  generated_count: GenerationProcessRow["generated_count"]
-  createdAt: GenerationProcessRow["created_at"]
+  generated_count: GenerationProcessRow['generated_count']
+  createdAt: GenerationProcessRow['created_at']
 }
 
 /**
@@ -191,9 +185,9 @@ export type CreateGenerationResponseDTO = {
  * Mirrors POST response shape in the plan.
  */
 export type GetGenerationDetailsResponseDTO = {
-  generationId: GenerationProcessRow["id"]
+  generationId: GenerationProcessRow['id']
   tasks: GenerationProposalTaskDTO[]
-  createdAt: GenerationProcessRow["created_at"]
+  createdAt: GenerationProcessRow['created_at']
 }
 
 // -----------------------------------------------------------------------------
@@ -201,10 +195,10 @@ export type GetGenerationDetailsResponseDTO = {
 // -----------------------------------------------------------------------------
 
 export type GenerationErrorLogItemDTO = {
-  id: GenerationProcessErrorLogRow["id"]
-  errorCode: GenerationProcessErrorLogRow["error_code"]
-  errorMessage: GenerationProcessErrorLogRow["error_message"]
-  createdAt: GenerationProcessErrorLogRow["created_at"]
+  id: GenerationProcessErrorLogRow['id']
+  errorCode: GenerationProcessErrorLogRow['error_code']
+  errorMessage: GenerationProcessErrorLogRow['error_message']
+  createdAt: GenerationProcessErrorLogRow['created_at']
 }
 
 export type GetGenerationErrorLogsResponseDTO = {
@@ -257,7 +251,5 @@ export type {
   TaskRow,
   TaskInsert,
   GenerationProcessRow,
-  GenerationProcessErrorLogRow,
+  GenerationProcessErrorLogRow
 }
-
-

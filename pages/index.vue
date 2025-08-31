@@ -25,7 +25,6 @@ const handleCreateTask = (title: string, description: string | null) => {
     parentTaskId: null,
     source: 'manual',
     generationId: null,
-    position: 1
   })
   showTaskForm.value = false
 }

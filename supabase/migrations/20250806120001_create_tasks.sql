@@ -9,7 +9,6 @@ create table if not exists tasks (
   user_id uuid not null references auth.users(id) on delete cascade,
   generation_id uuid references generation_process(id) on delete set null,
   parent_task_id uuid references tasks(id) on delete cascade,
-  position int not null check (position > 0),
   source task_source not null,
   title varchar(255) not null,
   description text,

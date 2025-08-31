@@ -72,7 +72,6 @@ const handleCreateSubtask = (title: string, description: string | null) => {
     parentTaskId: props.task.id,
     source: 'manual',
     generationId: null,
-    position: 1
   })
   showSubtaskForm.value = false
 }

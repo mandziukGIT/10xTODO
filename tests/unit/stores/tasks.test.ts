@@ -20,7 +20,7 @@ describe('Tasks Store', () => {
   })
 
   it('should create a top-level task', async () => {
-    mockFetch.mockResolvedValue({ 
+    mockFetch.mockResolvedValue({
       id: MOCK_TASK_ID,
       title: 'Test Task',
       description: 'Test Description',
@@ -28,18 +28,16 @@ describe('Tasks Store', () => {
       completed: false,
       createdAt: '2023-01-01T00:00:00Z',
       parentTaskId: null,
-      position: 1,
       subtasks: []
     })
-    
+
     const store = useTasks()
     const command: CreateTaskCommand = {
       title: 'Test Task',
       description: 'Test Description',
       source: 'manual',
       parentTaskId: null,
-      generationId: null,
-      position: 1
+      generationId: null
     }
 
     await store.createTask(command)
@@ -55,11 +53,29 @@ describe('Tasks Store', () => {
 
   it('should delete a top-level task', async () => {
     const store = useTasks()
-    
+
     // Setup initial state
     store.tasks = [
-      { id: 'task-1', title: 'Task 1', subtasks: [], completed: false, createdAt: '', isEdited: false, description: null, source: 'manual' },
-      { id: 'task-2', title: 'Task 2', subtasks: [], completed: false, createdAt: '', isEdited: false, description: null, source: 'manual' }
+      {
+        id: 'task-1',
+        title: 'Task 1',
+        subtasks: [],
+        completed: false,
+        createdAt: '',
+        isEdited: false,
+        description: null,
+        source: 'manual'
+      },
+      {
+        id: 'task-2',
+        title: 'Task 2',
+        subtasks: [],
+        completed: false,
+        createdAt: '',
+        isEdited: false,
+        description: null,
+        source: 'manual'
+      }
     ]
 
     await store.deleteTask('task-1')
