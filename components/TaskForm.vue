@@ -8,6 +8,8 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
+const titleInput = ref<InstanceType<typeof Input> | null>(null)
+
 const editForm = reactive({
   title: '',
   description: ''
@@ -39,6 +41,12 @@ const handleCancel = () => {
   formError.value = null
   emit('cancel')
 }
+
+onMounted(() => {
+  nextTick(() => {
+    titleInput.value?.focus()
+  })
+})
 </script>
 
 <template>
@@ -48,10 +56,10 @@ const handleCancel = () => {
         <label for="new-task-title" class="block text-sm font-medium mb-1">Title</label>
         <Input
           id="new-task-title"
+          ref="titleInput"
           v-model="editForm.title"
           placeholder="Task title"
           :class="{ 'border-red-500': formError && formError.includes('Title') }"
-          autofocus
         />
         <p v-if="formError && formError.includes('Title')" class="text-red-500 text-xs mt-1">
           {{ formError }}

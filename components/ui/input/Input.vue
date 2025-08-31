@@ -29,10 +29,17 @@ const modelValue = useVModel(props, "modelValue", emits, {
   passive: true,
   defaultValue: props.defaultValue,
 })
+
+const input = ref<HTMLInputElement | null>(null)
+
+defineExpose({
+  focus: () => input.value?.focus()
+})
 </script>
 
 <template>
   <input
+    ref="input"
     v-model="modelValue"
     v-bind="$attrs"
     :type="type"

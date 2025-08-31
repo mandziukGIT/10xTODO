@@ -27,6 +27,7 @@ const editForm = reactive({
 })
 
 const formError = ref<string | null>(null)
+const titleInput = ref<InstanceType<typeof Input> | null>(null)
 
 const validateForm = (): boolean => {
   if (!editForm.title.trim()) {
@@ -49,6 +50,14 @@ const handleCancel = () => {
   
   emit('cancel', props.task.id)
 }
+
+watch(() => props.task.isEdited, (isEditing) => {
+  if (isEditing) {
+    nextTick(() => {
+      titleInput.value?.focus()
+    })
+  }
+})
 
 const confirmDelete = () => {
   if (confirm('Are you sure you want to delete this task?')) {
@@ -116,10 +125,10 @@ const handleCreateSubtask = (title: string, description: string | null) => {
         <label for="edit-title" class="block text-sm font-medium mb-1">Title</label>
         <Input
           id="edit-title"
+          ref="titleInput"
           v-model="editForm.title"
           placeholder="Task title"
           :class="{ 'border-red-500': formError && formError.includes('Title') }"
-          autofocus
         />
         <p v-if="formError && formError.includes('Title')" class="text-red-500 text-xs mt-1">
           {{ formError }}
@@ -169,7 +178,7 @@ const handleCreateSubtask = (title: string, description: string | null) => {
     </div>
     
     <!-- Add subtask button -->
-    <div v-if="!task.isEdited && !task.completed && !isSubtask" class="mt-2 ml-6">
+    <div v-if="!task.isEdited && !task.completed && !isSubtask && (task.subtasks?.length ?? 0) < 10" class="mt-2 ml-6">
       <Button
         v-if="!showSubtaskForm"
         variant="link"
