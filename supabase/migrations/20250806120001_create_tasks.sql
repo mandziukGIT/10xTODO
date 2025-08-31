@@ -38,19 +38,9 @@ create policy tasks_delete on tasks
 create or replace function enforce_subtask_limits() returns trigger as $$
 declare
   root_parent uuid;
-  level1_count int;
   level2_count int;
 begin
-  if new.parent_task_id is null then
-    -- inserting a top-level task: count existing top-level for this user
-    select count(*) into level1_count
-      from tasks
-      where user_id = new.user_id
-        and parent_task_id is null;
-    if level1_count >= 10 then
-      raise exception 'cannot have more than 10 root-level tasks for a user';
-    end if;
-  else
+  if new.parent_task_id is not null then
     -- determine if parent is root or child
     select parent_task_id into root_parent from tasks where id = new.parent_task_id;
     if root_parent is null then
@@ -58,8 +48,8 @@ begin
       select count(*) into level2_count
         from tasks
         where parent_task_id = new.parent_task_id;
-      if level2_count >= 5 then
-        raise exception 'cannot have more than 5 second-level subtasks';
+      if level2_count >= 10 then
+        raise exception 'cannot have more than 10 second-level subtasks';
       end if;
     else
       -- parent is already level 2: disallow deeper nesting
