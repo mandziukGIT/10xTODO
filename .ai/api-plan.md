@@ -5,7 +5,7 @@
 - **Users**: Managed by Supabase Auth. These represent the authenticated users interacting with the system.
 - **GenerationProcess**: Represents AI generation process metadata. (Corresponds to the `generation_process` table) Contains fields such as `id`, `user_id`, `duration`, `model`, `generated_count`, `source_text_hash`, and `created_at`.
 - **GenerationProcessErrorLogs**: Stores error logs for AI tasks proposals generation. (Corresponds to the `generation_process_error_logs` table) Contains fields such as `id`, `user_id`, `model`, `source_text_hash`, `error_code`, `error_message`, and `created_at`.
-- **Tasks**: Represents tasks and subtasks (up to 2 levels of nesting). (Corresponds to the `tasks` table) Key fields include `id`, `user_id`, `generation_id`, `parent_task_id`, `position`, `source`, `title`, `description`, `created_at`, `completed`, and `completed_at`.
+- **Tasks**: Represents tasks and subtasks. (Corresponds to the `tasks` table) Key fields include `id`, `user_id`, `generation_id`, `parent_task_id`, `source`, `title`, `description`, `created_at`, `completed`, and `completed_at`.
 
 ## 2. Endpoints
 
@@ -14,6 +14,7 @@
 Endpoints for managing AI-assisted tasks generations.
 
 - **POST /generations**
+
   - **Description**: Generate tasks proposals with AI. Accepts a description of the goal/problem and triggers an LLM API call to generate task proposals.
   - **Request Body**:
     ```json
@@ -35,7 +36,6 @@ Endpoints for managing AI-assisted tasks generations.
     ```
   - **Success Codes**: 201 Created
   - **Error Codes**: 400 Bad Request, 500 Internal Server Error (if LLM processing fails)
-
 
 - **GET /generations/{generationId}**
   - **Description**: Retrieve detailed information of a specific generation including its tasks.
@@ -81,8 +81,8 @@ Endpoints for creating, retrieving, updating, deleting, and managing tasks and s
     ```
   - **Success Codes**: 200 OK
   - **Error Codes**: 401 Unauthorized
-  
 - **GET /tasks/{taskId}**
+
   - **Description**: Retrieves a specific task with its subtasks for the authenticated user.
   - **Response**:
     ```json
@@ -110,6 +110,7 @@ Endpoints for creating, retrieving, updating, deleting, and managing tasks and s
   - **Error Codes**: 401 Unauthorized, 404 Not Found
 
 - **POST /tasks**
+
   - **Description**: Creates a new task or subtask.
   - **Request Body**:
     ```json
@@ -135,6 +136,7 @@ Endpoints for creating, retrieving, updating, deleting, and managing tasks and s
   - **Error Codes**: 400 Bad Request (e.g., exceeding task limits), 401 Unauthorized
 
 - **PUT /tasks/{taskId}**
+
   - **Description**: Updates a task's basic data (title, description). Note: This endpoint only modifies the task's own data and does NOT trigger any cascading completion logic for subtasks. For completing a task with its subtasks, use the PATCH /complete endpoint instead.
   - **Request Body**:
     ```json
@@ -156,6 +158,7 @@ Endpoints for creating, retrieving, updating, deleting, and managing tasks and s
   - **Error Codes**: 400 Bad Request, 401 Unauthorized, 404 Not Found
 
 - **DELETE /tasks/{taskId}**
+
   - **Description**: Deletes a task. If the task has subtasks, they are either cascaded for deletion or an error is returned if constraints are violated.
   - **Response**:
     ```json
@@ -202,11 +205,13 @@ Endpoints for creating, retrieving, updating, deleting, and managing tasks and s
 ## 4. Validation and Business Logic
 
 - **Input Validation**:
+
   - Validate required fields and data types in request payloads (e.g., non-empty task titles, valid email formats).
-  - For tasks, ensure that the `source` field is one of: `ai_full`, `ai_edited`, or `manual`, and that any provided `position` is a positive integer.
+  - For tasks, ensure that the `source` field is one of: `ai_full`, `ai_edited`, or `manual`.
   - For AI generation sessions, ensure that the provided description is non-empty and meets complexity requirements.
 
 - **Business Logic**:
+
   - **AI Planning Session**: On creation, an LLM API is called to generate 4–8 task proposals. The session (handled on client-side) remains active until the user either accepts (commits tasks to the main list) or rejects (discarding the proposals) the session.
   - **Task Limits Enforcement**: Enforce a maximum of 10 top-level subtasks. Although database triggers enforce this constraint, the API should validate input and return immediate feedback if exceeded.
   - **Cascade Completion**: Marking a task complete should automatically cascade completion to its subtasks, as enforced at the database level.
